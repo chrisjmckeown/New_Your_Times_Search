@@ -5,6 +5,7 @@
 * [Technologies Utilized](#Technologies-Utilized)
 * [New Your Times Search Link](#New-Your-Times-Search-Link)
 * [Contact](#Contact)
+* [License](#License)
 
 ## Description
 A seach page for New York Times articles.
