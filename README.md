@@ -20,7 +20,7 @@ Use the New York Times search page by:
 * Search, results will be listed in the top arcticles result section of the page.
 * Clear the search results at any point.
 
-<img src="./Assets/Images/Example.gif" alt="A calendar" vertical-align="text-top" style="vertical-align:top"> 
+<img src="./New-York-TImes-Seach.png" alt="New Your Times Search" vertical-align="text-top" style="vertical-align:top"> 
 
 ## Technologies Utilized
 Primary technologies:
