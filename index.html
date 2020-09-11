@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+    <title>New Your Times Search</title>
+
+    <style>
+        .jumbotron {
+            background-color: rgb(6, 6, 71);
+            color: white;
+        }
+
+        .article {
+            text-align: left;
+            background-color: rgba(212, 198, 198, 0.918);
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="jumbotron text-center">
+            <h1>
+                <strong><i class="far fa-newspaper"></i> New York Times Search</h1></strong>
+        </header>
+        <main>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="far fa-newspaper"></i> Seach Parameters</h5>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="search-term">Search term:</label>
+                                    <input class="form-control" type="text" id="search-input">
+                                </div>
+                                <div class="form-group">
+                                    <label for="record-count">Number of Records to Retrieve:</label>
+                                    <input class="form-control" type="number" value="5" min="1" max="10"
+                                        id="record-count">
+                                </div>
+                                <div class="form-group">
+                                    <label for="start-year">Start Date:</label>
+                                    <input class="form-control" type="date" id="start-year" name="date">
+                                </div>
+                                <div class="form-group">
+                                    <label for="end-year">End Date:</label>
+                                    <input class="form-control" type="date" id="end-year" name="date">
+                                </div>
+                                <button id="search-btn" class="btn btn-primary"><i class="fas fa-search"></i>
+                                    Search</button>
+                                <button id="clear-btn" class="btn btn-primary"><i class="fas fa-trash-alt"></i>
+                                    Clear</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-table"></i> Top Articles</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="results"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <br>
+        <footer class="text-center">
+            <hr>
+            <h4>Made with lots of love <i class="fas fa-heart"></i></h4>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        var key = "w78Ce7icGU8imAuam5VlsabdjDcMZAxA";
+        $("#start-year").attr("value", moment().add(-1, "years").format("YYYY-MM-DD"));
+        $("#end-year").attr("value", moment().format("YYYY-MM-DD"));
+
+        function clear() {
+            $("#results").empty();
+        };
+
+        $("#clear-btn").on("click", clear());
+
+        $("#search-btn").on("click", function (event) {
+            event.preventDefault();
+            clear();
+            var queryURL = buildquery();
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(renderPage).catch(function (err) {
+                console.log(err);
+            });
+        });
+
+        function buildquery() {
+            var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?";
+            var queryParams = { "api-key": key };
+
+            queryParams.q = $("#search-input").val().trim();
+            queryParams.begin_date = moment($("#start-year").val()).format("YYYYMMDD");
+            queryParams.end_date = moment($("#end-year").val()).format("YYYYMMDD");
+            console.log(queryParams);
+            console.log(queryURL + $.param(queryParams));
+            return queryURL + $.param(queryParams);
+        };
+
+        function renderPage(response) {
+            var results = response.response.docs;
+            var recordCount = $("#record-count").val();
+            for (var i = 0; i < recordCount; i++) {
+                var article = results[i];
+                console.log(article);
+
+                var $article = $("<div>");
+                $article.addClass("article");
+
+                if (article.headline && article.headline.main) {
+                    $article.append("<strong> " + article.headline.main + "</strong>");
+                }
+                if (article.byline && article.byline.original) {
+                    $article.append("<p> " + article.byline.original + "</strpong>");
+                }
+                if (article.section_name) {
+                    $article.append("<p> " + article.section_name + "</strpong>");
+                }
+                if (article.pub_date) {
+                    $article.append("<p> " + article.pub_date + "</strpong>");
+                }
+                $article.append("<a href='" + article.web_url + "' target='_blank'>" + article.web_url + "</a>");
+
+                $("#results").prepend($article);
+            };
+        };
+    </script>
+</body>
+
+</html>
