@@ -20,15 +20,52 @@
             background-color: rgba(212, 198, 198, 0.918);
             margin: 10px;
         }
+
+        /* styling the footer */
+        .footer {
+            width: 100%;
+            position: fixed;
+            bottom: 0px;
+        }
+
+        /* setting footer styles */
+        .copyright-social-media {
+            margin: 0 auto;
+            height: 40px;
+            background-color: rgb(6, 6, 71);
+            display: flex;
+            justify-content: center;
+            /* For horizontal alignment */
+            align-items: center;
+            /* For vertical alignment */
+        }
+
+        /* social media div */
+        .footer,
+        .footer .copyright-social-media a {
+            font-size: 20px;
+            color: white;
+        }
+
+        .footer .copyright-social-media a {
+            padding-left: 10px;
+        }
+
+        .footer .copyright-social-media a:hover {
+            color: black;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
+        <!-- Semantic header -->
         <header class="jumbotron text-center">
             <h1>
-                <strong><i class="far fa-newspaper"></i> New York Times Search</h1></strong>
+                <strong><i class="far fa-newspaper"></i> New York Times Search</strong>
+            </h1>
         </header>
+        <!-- Semantic main -->
         <main>
             <div class="row">
                 <div class="col-sm-12">
@@ -78,78 +115,88 @@
                 </div>
             </div>
         </main>
-        <br>
-        <footer class="text-center">
-            <hr>
-            <h4>Made with lots of love <i class="fas fa-heart"></i></h4>
-        </footer>
     </div>
+    <!-- Semantic footer -->
+    <footer class="footer">
+        <div class="container">
+            <!-- div for social media -->
+            <div class="copyright-social-media">
+                <span><a href="https://github.com/chrisjmckeown/New_Your_Times_Search/blob/master/LICENSE"
+                        target="_blank">&#169; 2020</a> - Chris Mckeown - </span>
+                <a href="https://www.linkedin.com/in/chrisjmckeown/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://twitter.com/ChrisMckeown6" target="_blank"><i class="fab fa-twitter-square"></i></a>
+                <a href="https://www.facebook.com/christopher.j.mckeown.3" target="_blank"><i
+                        class="fab fa-facebook-square"></i></a>
+                <a href="https://github.com/chrisjmckeown" target="_blank"> <i class="fab fa-github-square"></i></a>
+            </div>
+        </div>
+        </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript">
-        var key = "w78Ce7icGU8imAuam5VlsabdjDcMZAxA";
-        $("#start-year").attr("value", moment().add(-1, "years").format("YYYY-MM-DD"));
-        $("#end-year").attr("value", moment().format("YYYY-MM-DD"));
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            var key = "w78Ce7icGU8imAuam5VlsabdjDcMZAxA";
+            $("#start-year").attr("value", moment().add(-1, "years").format("YYYY-MM-DD"));
+            $("#end-year").attr("value", moment().format("YYYY-MM-DD"));
 
-        function clear() {
-            $("#results").empty();
-        };
-
-        $("#clear-btn").on("click", clear());
-
-        $("#search-btn").on("click", function (event) {
-            event.preventDefault();
-            clear();
-            var queryURL = buildquery();
-            $.ajax({
-                url: queryURL,
-                method: "GET"
-            }).then(renderPage).catch(function (err) {
-                console.log(err);
-            });
-        });
-
-        function buildquery() {
-            var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?";
-            var queryParams = { "api-key": key };
-
-            queryParams.q = $("#search-input").val().trim();
-            queryParams.begin_date = moment($("#start-year").val()).format("YYYYMMDD");
-            queryParams.end_date = moment($("#end-year").val()).format("YYYYMMDD");
-            console.log(queryParams);
-            console.log(queryURL + $.param(queryParams));
-            return queryURL + $.param(queryParams);
-        };
-
-        function renderPage(response) {
-            var results = response.response.docs;
-            var recordCount = $("#record-count").val();
-            for (var i = 0; i < recordCount; i++) {
-                var article = results[i];
-                console.log(article);
-
-                var $article = $("<div>");
-                $article.addClass("article");
-
-                if (article.headline && article.headline.main) {
-                    $article.append("<strong> " + article.headline.main + "</strong>");
-                }
-                if (article.byline && article.byline.original) {
-                    $article.append("<p> " + article.byline.original + "</strpong>");
-                }
-                if (article.section_name) {
-                    $article.append("<p> " + article.section_name + "</strpong>");
-                }
-                if (article.pub_date) {
-                    $article.append("<p> " + article.pub_date + "</strpong>");
-                }
-                $article.append("<a href='" + article.web_url + "' target='_blank'>" + article.web_url + "</a>");
-
-                $("#results").prepend($article);
+            function clear() {
+                $("#results").empty();
             };
-        };
-    </script>
+
+            $("#clear-btn").on("click", clear());
+
+            $("#search-btn").on("click", function (event) {
+                event.preventDefault();
+                clear();
+                var queryURL = buildquery();
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                }).then(renderPage).catch(function (err) {
+                    console.log(err);
+                });
+            });
+
+            function buildquery() {
+                var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?";
+                var queryParams = { "api-key": key };
+
+                queryParams.q = $("#search-input").val().trim();
+                queryParams.begin_date = moment($("#start-year").val()).format("YYYYMMDD");
+                queryParams.end_date = moment($("#end-year").val()).format("YYYYMMDD");
+                console.log(queryParams);
+                console.log(queryURL + $.param(queryParams));
+                return queryURL + $.param(queryParams);
+            };
+
+            function renderPage(response) {
+                var results = response.response.docs;
+                var recordCount = $("#record-count").val();
+                for (var i = 0; i < recordCount; i++) {
+                    var article = results[i];
+                    console.log(article);
+
+                    var $article = $("<div>");
+                    $article.addClass("article");
+
+                    if (article.headline && article.headline.main) {
+                        $article.append("<strong> " + article.headline.main + "</strong>");
+                    }
+                    if (article.byline && article.byline.original) {
+                        $article.append("<p> " + article.byline.original + "</strpong>");
+                    }
+                    if (article.section_name) {
+                        $article.append("<p> " + article.section_name + "</strpong>");
+                    }
+                    if (article.pub_date) {
+                        $article.append("<p> " + article.pub_date + "</strpong>");
+                    }
+                    $article.append("<a href='" + article.web_url + "' target='_blank'>" + article.web_url + "</a>");
+
+                    $("#results").prepend($article);
+                };
+            };
+        </script>
 </body>
 
 </html>
